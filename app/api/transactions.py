@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from app import schemas, models
 from app.core.database import get_db
+from app.core.audit import log_audit
 
 router = APIRouter()
 
@@ -11,6 +12,14 @@ def create_transaction(transaction: schemas.TransactionCreate, db: Session = Dep
     db.add(db_transaction)
     db.commit()
     db.refresh(db_transaction)
+    log_audit(
+        db,
+        user_id=None,  # Set user_id if available
+        table_name="transactions",
+        row_id=db_transaction.id,
+        action="CREATE",
+        diff=transaction.dict()
+    )
     return db_transaction
 
 @router.get("/", response_model=list[schemas.Transaction])
@@ -19,10 +28,21 @@ def list_transactions(db: Session = Depends(get_db)):
 
 @router.delete("/{transaction_id}", response_model=schemas.Transaction)
 def soft_delete_transaction(transaction_id: int, db: Session = Depends(get_db)):
-    transaction = db.query(models.Transaction).filter(models.Transaction.id == transaction_id, models.Transaction.deleted_at.is_(None)).first()
+    transaction = db.query(models.Transaction).filter(
+        models.Transaction.id == transaction_id,
+        models.Transaction.deleted_at.is_(None)
+    ).first()
     if not transaction:
         raise HTTPException(status_code=404, detail="Transaction not found")
     from datetime import datetime
-    transaction.deleted_at = datetime.now(datetime.timezone.utc)
+    transaction.deleted_at = datetime.utcnow()
     db.commit()
+    log_audit(
+        db,
+        user_id=None,  # Set user_id if available
+        table_name="transactions",
+        row_id=transaction.id,
+        action="DELETE",
+        diff={"deleted_at": str(transaction.deleted_at)}
+    )
     return transaction
