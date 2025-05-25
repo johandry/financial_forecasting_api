@@ -34,3 +34,10 @@ def decode_access_token(token: str):
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
         )
+
+def get_user_id_from_token(token: str) -> str | None:
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+        return payload.get("sub")
+    except JWTError:
+        return None
