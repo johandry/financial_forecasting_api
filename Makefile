@@ -6,15 +6,16 @@ install:
 
 # Run the FastAPI app (dev mode)
 run:
-	poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+	ENV=local poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
 # Run tests
 test:
-	poetry run pytest
+	docker compose up -d redis
+	ENV=local poetry run pytest
 
 # Seed the database with test data
 seed:
-	PYTHONPATH=. poetry run python app/core/seed.py
+	ENV=local PYTHONPATH=. poetry run python app/core/seed.py
 
 # Remove Python cache files and pytest cache
 clean:
