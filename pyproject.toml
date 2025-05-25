@@ -1,7 +1,7 @@
 [project]
 name = "Financial-Forecasting-API"
 version = "0.1.0"
-description = ""
+description = "API service for ingesting bills and transactions, forecasting daily balances, and alerting users when projected balances fall below a configurable buffer"
 authors = [
     {name = "Johandry Amador",email = "johandry@gmail.com"}
 ]
