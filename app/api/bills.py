@@ -23,6 +23,6 @@ def soft_delete_bill(bill_id: int, db: Session = Depends(get_db)):
     if not bill:
         raise HTTPException(status_code=404, detail="Bill not found")
     from datetime import datetime
-    bill.deleted_at = datetime.utcnow()
+    bill.deleted_at = datetime.now(datetime.timezone.utc)
     db.commit()
     return bill

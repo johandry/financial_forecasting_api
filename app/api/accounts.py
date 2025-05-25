@@ -23,6 +23,6 @@ def soft_delete_account(account_id: int, db: Session = Depends(get_db)):
     if not account:
         raise HTTPException(status_code=404, detail="Account not found")
     from datetime import datetime
-    account.deleted_at = datetime.utcnow()
+    account.deleted_at = datetime.now(datetime.timezone.utc)
     db.commit()
     return account

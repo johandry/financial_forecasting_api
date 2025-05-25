@@ -23,6 +23,6 @@ def soft_delete_transaction(transaction_id: int, db: Session = Depends(get_db)):
     if not transaction:
         raise HTTPException(status_code=404, detail="Transaction not found")
     from datetime import datetime
-    transaction.deleted_at = datetime.utcnow()
+    transaction.deleted_at = datetime.now(datetime.timezone.utc)
     db.commit()
     return transaction
