@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 from app.core.config import settings
+from app.core.audit import register_audit_listeners
 
 DATABASE_URL = (
     f"postgresql+psycopg2://{settings.POSTGRES_USER}:{settings.POSTGRES_PASSWORD}"
@@ -10,6 +11,8 @@ DATABASE_URL = (
 engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
+
+register_audit_listeners()
 
 # Dependency for FastAPI routes
 def get_db():

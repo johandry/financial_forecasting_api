@@ -2,7 +2,6 @@ from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from app import schemas, models
 from app.core.database import get_db
-from app.core.audit import log_audit
 
 router = APIRouter()
 
@@ -28,12 +27,4 @@ def update_user_settings(user_id: int, settings_update: schemas.UserSettingsBase
         setattr(settings, field, value)
     db.commit()
     db.refresh(settings)
-    log_audit(
-        db,
-        user_id=user_id,
-        table_name="user_settings",
-        row_id=settings.id,
-        action="UPDATE",
-        diff=settings_update.dict()
-    )
     return settings
