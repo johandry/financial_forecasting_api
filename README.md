@@ -19,7 +19,7 @@ A Python-based backend service for ingesting bills and transactions, forecasting
 
 ## Project Structure
 
-```
+```tree
 financial_forecasting_api/
 ├── app/
 │   ├── api/                # FastAPI routers
@@ -48,27 +48,32 @@ financial_forecasting_api/
 ### Local Development
 
 1. **Install dependencies:**
+
    ```bash
    poetry install
    ```
 
 2. **Copy and edit `.env`:**
+
    ```bash
    cp .env.example .env
    # Edit as needed
    ```
 
 3. **Run the app:**
+
    ```bash
    make run
    ```
 
 4. **Seed the database:**
+
    ```bash
    make seed
    ```
 
 5. **Run tests:**
+
    ```bash
    make test
    ```
@@ -76,16 +81,19 @@ financial_forecasting_api/
 ### Docker Compose
 
 1. **Start all services:**
+
    ```bash
    make docker-run
    ```
 
 2. **Seed the database in Docker:**
+
    ```bash
    make docker-seed
    ```
 
 3. **Run tests in Docker:**
+
    ```bash
    make docker-test
    ```
