@@ -1,4 +1,4 @@
-from  datetime import datetime, timezone
+from datetime import datetime, timezone
 
 from sqlalchemy import event
 from sqlalchemy.orm import Session
@@ -7,7 +7,7 @@ from app.models import Base
 
 
 def _serialize_value(val):
-    if isinstance(val, (datetime, )):
+    if isinstance(val, (datetime,)):
         return val.isoformat()
     return val
 
@@ -18,7 +18,10 @@ def _create_audit_log_obj(target, action):
     # Avoid recursion for AuditLog itself
     if getattr(target, "__tablename__", None) == "audit_log":
         return None
-    diff = {c.name: _serialize_value(getattr(target, c.name)) for c in target.__table__.columns}
+    diff = {
+        c.name: _serialize_value(getattr(target, c.name))
+        for c in target.__table__.columns
+    }
     return AuditLog(
         user_id=getattr(target, "user_id", None),
         table_name=target.__tablename__,

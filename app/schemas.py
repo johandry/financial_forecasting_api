@@ -32,6 +32,7 @@ class AccountBase(BaseModel):
 class AccountCreate(AccountBase):
     user_id: int
 
+
 class Account(AccountBase):
     id: int
     user_id: int

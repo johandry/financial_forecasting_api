@@ -1,11 +1,9 @@
-import datetime
-
 from fastapi.testclient import TestClient
 
-from app.main import app
-from app.core.database import SessionLocal
-from app.models import User, Account, Bill, Transaction, UserSettings
 from app.core import seed
+from app.core.database import SessionLocal
+from app.main import app
+from app.models import Account, User, UserSettings
 
 client = TestClient(app)
 
@@ -15,11 +13,13 @@ def test_root():
     assert response.status_code == 200
     assert "Financial Forecasting API" in response.json()["msg"]
 
+
 def get_or_create_user(db) -> int:
     user = db.query(User).filter_by(id=1).first()
     if not user:
         return seed.add_user(db)
     return user.id
+
 
 def test_accounts_crud():
     # Ensure user exists
@@ -49,12 +49,14 @@ def test_accounts_crud():
     assert response.status_code == 200
     assert response.json()["deleted_at"] is not None
 
+
 def get_or_create_account(db) -> int:
     account = db.query(Account).filter_by(id=1).first()
     if not account:
         user_id = get_or_create_user(db)
         return seed.add_account(db, user_id)
     return account.id
+
 
 def test_bills_crud():
     # Ensure account exists
@@ -86,6 +88,7 @@ def test_bills_crud():
     assert response.status_code == 200
     assert response.json()["deleted_at"] is not None
 
+
 def test_transactions_crud():
     # Ensure account exists
     db = SessionLocal()
@@ -115,6 +118,7 @@ def test_transactions_crud():
     assert response.status_code == 200
     assert response.json()["deleted_at"] is not None
 
+
 def get_or_create_user_settings(db):
     user_id = get_or_create_user(db)
     settings = db.query(UserSettings).filter_by(user_id=user_id).first()
@@ -122,6 +126,7 @@ def get_or_create_user_settings(db):
         seed.add_user_settings(db, user_id)
         return user_id
     return user_id
+
 
 def test_user_settings_get_and_update():
     # Ensure user and settings exist
@@ -134,8 +139,6 @@ def test_user_settings_get_and_update():
     assert response.status_code == 200
     settings = response.json()
     assert "buffer_amount" in settings
-    original_buffer_amount = settings["buffer_amount"]
-    original_forecast_horizon = settings["forecast_horizon_months"]
 
     # Update user settings
     update = {"buffer_amount": 75.0, "forecast_horizon_months": 6}
@@ -143,6 +146,7 @@ def test_user_settings_get_and_update():
     assert response.status_code == 200
     assert response.json()["buffer_amount"] == 75.0
     assert response.json()["forecast_horizon_months"] == 6
+
 
 def test_auth_login_success():
     # The user johandry@example.com with password $3cr3tP@a55w0rd! should exist from seed
@@ -155,6 +159,7 @@ def test_auth_login_success():
     data = response.json()
     assert "access_token" in data
     assert data["token_type"] == "bearer"
+
 
 def test_auth_login_failure():
     response = client.post(
@@ -177,5 +182,6 @@ def test_auth_login_failure():
 #     assert not_hit_429, "Did not hit rate limit"
 
 if __name__ == "__main__":
-    import pytest, os
+    import pytest
+
     pytest.main(["-v", __file__])

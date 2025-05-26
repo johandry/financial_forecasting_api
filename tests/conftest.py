@@ -2,7 +2,6 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from app.core import seed
 from app.core.database import Base, engine
 
 
