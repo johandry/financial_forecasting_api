@@ -43,6 +43,7 @@ def add_user_settings(db: Session, user_id: int):
     )
     db.add(settings)
     db.commit()
+    db.refresh(settings)
 
 
 def add_account(

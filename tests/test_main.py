@@ -1,9 +1,9 @@
 from fastapi.testclient import TestClient
 
 from app.core import seed
-from app.core.database import SessionLocal
 from app.main import app
 from app.models import Account, User, UserSettings
+from tests.conftest import TestingSessionLocal
 
 client = TestClient(app)
 
@@ -15,7 +15,7 @@ def test_root():
 
 
 def get_or_create_user(db) -> int:
-    user = db.query(User).filter_by(id=1).first()
+    user = db.query(User).filter_by(email="johandry@example.com").first()
     if not user:
         return seed.add_user(db)
     return user.id
@@ -23,7 +23,7 @@ def get_or_create_user(db) -> int:
 
 def test_accounts_crud():
     # Ensure user exists
-    db = SessionLocal()
+    db = TestingSessionLocal()
     user_id = get_or_create_user(db)
     db.close()
 
@@ -60,7 +60,7 @@ def get_or_create_account(db) -> int:
 
 def test_bills_crud():
     # Ensure account exists
-    db = SessionLocal()
+    db = TestingSessionLocal()
     account_id = get_or_create_account(db)
     db.close()
 
@@ -91,7 +91,7 @@ def test_bills_crud():
 
 def test_transactions_crud():
     # Ensure account exists
-    db = SessionLocal()
+    db = TestingSessionLocal()
     account_id = get_or_create_account(db)
     db.close()
 
@@ -124,13 +124,12 @@ def get_or_create_user_settings(db):
     settings = db.query(UserSettings).filter_by(user_id=user_id).first()
     if not settings:
         seed.add_user_settings(db, user_id)
-        return user_id
     return user_id
 
 
 def test_user_settings_get_and_update():
     # Ensure user and settings exist
-    db = SessionLocal()
+    db = TestingSessionLocal()
     user_id = get_or_create_user_settings(db)
     db.close()
 
@@ -149,7 +148,11 @@ def test_user_settings_get_and_update():
 
 
 def test_auth_login_success():
-    # The user johandry@example.com with password $3cr3tP@a55w0rd! should exist from seed
+    # Ensure user exists
+    db = TestingSessionLocal()
+    _ = get_or_create_user(db)
+    db.close()
+
     response = client.post(
         "/auth/login",
         data={"username": "johandry@example.com", "password": "$3cr3tP@a55w0rd!"},
@@ -162,6 +165,11 @@ def test_auth_login_success():
 
 
 def test_auth_login_failure():
+    # Ensure user exists
+    db = TestingSessionLocal()
+    _ = get_or_create_user(db)
+    db.close()
+
     response = client.post(
         "/auth/login",
         data={"username": "johandry@example.com", "password": "wrongpassword"},

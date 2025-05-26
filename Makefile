@@ -10,7 +10,6 @@ run:
 
 # Run tests
 test:
-	POSTGRES_DB=forecast_test_db docker compose up -d redis db
 	ENV=test poetry run pytest
 
 # Seed the database with test data
