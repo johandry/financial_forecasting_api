@@ -1,11 +1,12 @@
-from datetime import datetime
-from sqlalchemy import (
-    Column, Integer, String, DateTime, Float, Boolean, ForeignKey, Text, JSON
-)
-from sqlalchemy.orm import declarative_base, relationship
+import datetime
+
+from sqlalchemy import (JSON, Boolean, Column, DateTime, Float, ForeignKey,
+                        Integer, String, Text)
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
-Base = declarative_base()
+from app.core.database import Base
+
 
 class User(Base):
     __tablename__ = "users"
@@ -13,12 +14,17 @@ class User(Base):
     email = Column(String(255), unique=True, nullable=False, index=True)
     hashed_password = Column(String(255), nullable=False)
     is_active = Column(Boolean, default=True)
-    created_at = Column(DateTime, server_default=func.now())
+    created_at = Column(
+        DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc)
+    )
     deleted_at = Column(DateTime, nullable=True)
 
-    accounts = relationship("Account", back_populates="user", cascade="all, delete-orphan")
+    accounts = relationship(
+        "Account", back_populates="user", cascade="all, delete-orphan"
+    )
     settings = relationship("UserSettings", back_populates="user", uselist=False)
     audit_logs = relationship("AuditLog", back_populates="user")
+
 
 class Account(Base):
     __tablename__ = "accounts"
@@ -32,7 +38,10 @@ class Account(Base):
 
     user = relationship("User", back_populates="accounts")
     bills = relationship("Bill", back_populates="account", cascade="all, delete-orphan")
-    transactions = relationship("Transaction", back_populates="account", cascade="all, delete-orphan")
+    transactions = relationship(
+        "Transaction", back_populates="account", cascade="all, delete-orphan"
+    )
+
 
 class Bill(Base):
     __tablename__ = "bills"
@@ -41,13 +50,18 @@ class Bill(Base):
     name = Column(String(100), nullable=False)
     amount = Column(Float, nullable=False)
     start_date = Column(DateTime, nullable=False)
-    recurrence = Column(String(50), nullable=True)  # e.g., "MONTHLY", "WEEKLY", RRULE string
+    recurrence = Column(
+        String(50), nullable=True
+    )  # e.g., "MONTHLY", "WEEKLY", RRULE string
     end_date = Column(DateTime, nullable=True)
     notes = Column(Text, nullable=True)
-    created_at = Column(DateTime, server_default=func.now())
+    created_at = Column(
+        DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc)
+    )
     deleted_at = Column(DateTime, nullable=True)
 
     account = relationship("Account", back_populates="bills")
+
 
 class Transaction(Base):
     __tablename__ = "transactions"
@@ -58,10 +72,13 @@ class Transaction(Base):
     date = Column(DateTime, nullable=False)
     is_recurring = Column(Boolean, default=False)
     notes = Column(Text, nullable=True)
-    created_at = Column(DateTime, server_default=func.now())
+    created_at = Column(
+        DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc)
+    )
     deleted_at = Column(DateTime, nullable=True)
 
     account = relationship("Account", back_populates="transactions")
+
 
 class UserSettings(Base):
     __tablename__ = "user_settings"
@@ -69,10 +86,13 @@ class UserSettings(Base):
     user_id = Column(Integer, ForeignKey("users.id"), unique=True, nullable=False)
     buffer_amount = Column(Float, default=50.0)
     forecast_horizon_months = Column(Integer, default=3)
-    created_at = Column(DateTime, server_default=func.now())
+    created_at = Column(
+        DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc)
+    )
     deleted_at = Column(DateTime, nullable=True)
 
     user = relationship("User", back_populates="settings")
+
 
 class AuditLog(Base):
     __tablename__ = "audit_log"

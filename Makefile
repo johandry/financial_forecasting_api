@@ -1,4 +1,4 @@
-.PHONY: run install test clean seed dc-run dc-test dc-seed
+.PHONY: run install test clean seed dc-run dc-test dc-seed lint
 
 # Install all dependencies
 install:
@@ -10,12 +10,19 @@ run:
 
 # Run tests
 test:
-	docker compose up -d redis
-	ENV=local poetry run pytest
+	POSTGRES_DB=forecast_test_db docker compose up -d redis db
+	ENV=test poetry run pytest
 
 # Seed the database with test data
 seed:
+	docker compose up -d db
 	ENV=local PYTHONPATH=. poetry run python app/core/seed.py
+
+#  Lint and auto-fix the code using black and isort, then check with flake8
+fmt:
+	poetry run black app tests
+	poetry run isort app tests
+	poetry run flake8 app tests
 
 # Remove Python cache files and pytest cache
 clean:
@@ -31,6 +38,6 @@ docker-run:
 docker-test:
 	docker compose exec api poetry run pytest
 
-# Seed the database inside the Docker Compose container
-docker-seed:
-	docker compose exec api poetry run python app/core/seed.py
+# Clean and destroy the Docker Compose environment (containers, networks, volumes)
+docker-clean:
+	docker compose down -v --remove-orphans

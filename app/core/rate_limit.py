@@ -1,11 +1,14 @@
-from fastapi import Request, HTTPException
-from starlette.middleware.base import BaseHTTPMiddleware
 import time
+
 import redis
+from fastapi import HTTPException, Request
+from starlette.middleware.base import BaseHTTPMiddleware
+
 from app.core.config import settings
 from app.core.security import get_user_id_from_token
 
 redis_client = redis.Redis.from_url(settings.REDIS_URL)
+
 
 class RateLimiterMiddleware(BaseHTTPMiddleware):
     def __init__(self, app, max_requests: int = 100, window_seconds: int = 60):

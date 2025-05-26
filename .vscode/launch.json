@@ -1,0 +1,41 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python Debugger: Current File",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}",
+        "ENV": "local",
+        "POSTGRES_DB": "forecast_local_db",
+        "POSTGRES_SERVER": "localhost",
+        "REDIS_URL": "redis://localhost:6379/0"
+      },
+      "justMyCode": true,
+      "cwd": "${workspaceFolder}",
+    },
+    {
+      "name": "Python Debugger: Current Testing File",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "purpose": ["debug-test"],
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}",
+        "ENV": "test",
+        "POSTGRES_DB": "forecast_test_db",
+        "POSTGRES_SERVER": "localhost",
+        "REDIS_URL": "redis://localhost:6379/0",
+      },
+      "justMyCode": true,
+      "cwd": "${workspaceFolder}",
+    }
+  ]
+}
