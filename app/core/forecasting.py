@@ -11,7 +11,13 @@ from app.models import ForecastOverride
 
 
 def forecast_balance(
-    account, bills, transactions, horizon_days=90, buffer_amount=50.0, db=None, start_date=None
+    account,
+    bills,
+    transactions,
+    horizon_days=90,
+    buffer_amount=50.0,
+    db=None,
+    start_date=None,
 ):
     """
     Calculate daily balances for the next `horizon_days` days and alert dates below buffer.

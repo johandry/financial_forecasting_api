@@ -2,13 +2,13 @@ from datetime import datetime, timedelta
 
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
-from typing import List, Dict
 
 from app.core.database import get_db
 from app.core.forecasting import forecast_balance
 from app.core.recurrence import expand_recurrence
 from app.models import Account, Bill, ForecastOverride, Transaction
-from app.schemas import ForecastOverrideCreate, ForecastResponse
+from app.schemas import (ForecastOverrideCreate, ForecastResponse,
+                         OverrideResponse)
 
 router = APIRouter()
 
@@ -154,7 +154,7 @@ def get_alerts(
 
 @router.post(
     "/overrides",
-    response_model=Dict[str, int],
+    response_model=OverrideResponse,
     summary="Create or update a forecast override",
     description="""
 Create or update an override to skip or modify a specific bill or transaction on a given date.
@@ -184,7 +184,7 @@ Create or update an override to skip or modify a specific bill or transaction on
       "override_amount": 500.0
     }
     ```
-"""
+""",
 )
 def create_override(
     override: ForecastOverrideCreate,
@@ -193,7 +193,7 @@ def create_override(
     """
     Create or update a forecast override (skip or modify a specific event).
 
-    **Example:**  
+    **Example:**
     To skip a bill on 2024-06-15, send:
     ```
     {

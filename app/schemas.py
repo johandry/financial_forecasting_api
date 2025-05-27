@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from typing import Optional
+from typing import Dict, List, Optional
 
 from pydantic import BaseModel
 
@@ -127,3 +127,14 @@ class ForecastOverrideCreate(BaseModel):
     event_date: date
     skip: bool = False
     override_amount: Optional[float] = None
+
+
+class ForecastResponse(BaseModel):
+    balances: Dict[str, float]
+    alerts: List[str]
+    events: List[dict]
+
+
+class OverrideResponse(BaseModel):
+    status: str
+    override_id: int

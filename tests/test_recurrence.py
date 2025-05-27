@@ -1,4 +1,5 @@
 from datetime import datetime
+
 import pytest
 
 from app.core.recurrence import expand_recurrence
@@ -93,7 +94,9 @@ def test_daily_crossing_month():
 def test_weekly_leap_year():
     # Weekly recurrence should include Feb 29 if it lands on a recurrence
     dates = expand_recurrence(datetime(2024, 2, 1), "WEEKLY", datetime(2024, 3, 1))
-    assert datetime(2024, 2, 29) in dates or datetime(2024, 2, 29) not in dates  # Acceptable either way, but should not error
+    assert (
+        datetime(2024, 2, 29) in dates or datetime(2024, 2, 29) not in dates
+    )  # Acceptable either way, but should not error
 
 
 def test_eom_leap_year():
