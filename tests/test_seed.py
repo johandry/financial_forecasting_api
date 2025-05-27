@@ -1,17 +1,18 @@
-from app.core import seed
-from app.core.database import SessionLocal
+from app.core.seed import seed
 from app.models import Account, User, UserSettings
+from tests.conftest import Base, TestingSessionLocal, engine
 
 
 def test_seed_creates_user_and_account_and_settings():
-    # Delete existing tables if needed
-    seed.Base.metadata.drop_all(bind=seed.engine)
-    # Create tables for testing
-    seed.Base.metadata.create_all(bind=seed.engine)
-    # Run the seed function
-    seed.seed()
+    db = TestingSessionLocal()
 
-    db = SessionLocal()
+    # Delete existing tables if needed
+    Base.metadata.drop_all(bind=engine)
+    # Create tables for testing
+    Base.metadata.create_all(bind=engine)
+    # Run the seed function
+    seed(db)
+
     user = db.query(User).filter(User.email == "johandry@example.com").first()
     assert user is not None, "User was not created by seed()"
     assert user.hashed_password is not None

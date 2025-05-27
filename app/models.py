@@ -1,7 +1,7 @@
 import datetime
 
 from sqlalchemy import (JSON, Boolean, Column, DateTime, Float, ForeignKey,
-                        Integer, String, Text)
+                        Integer, String)
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
@@ -44,26 +44,32 @@ class Account(Base):
 
 
 class Bill(Base):
+    """
+    Represents a bill, which may be recurring.
+    TODO: Implement recurrence expansion logic for forecasting.
+    """
+
     __tablename__ = "bills"
     id = Column(Integer, primary_key=True, index=True)
     account_id = Column(Integer, ForeignKey("accounts.id"), nullable=False)
     name = Column(String(100), nullable=False)
     amount = Column(Float, nullable=False)
     start_date = Column(DateTime, nullable=False)
-    recurrence = Column(
-        String(50), nullable=True
-    )  # e.g., "MONTHLY", "WEEKLY", RRULE string
     end_date = Column(DateTime, nullable=True)
-    notes = Column(Text, nullable=True)
-    created_at = Column(
-        DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc)
-    )
+    recurrence = Column(String(20), nullable=True)  # e.g., "MONTHLY", "EOM"
+    notes = Column(String(255), nullable=True)
+    created_at = Column(DateTime, default=datetime.datetime.now(datetime.timezone.utc))
     deleted_at = Column(DateTime, nullable=True)
 
     account = relationship("Account", back_populates="bills")
 
 
 class Transaction(Base):
+    """
+    Represents a transaction, which may be recurring.
+    TODO: Implement recurrence and forecasting logic for recurring transactions.
+    """
+
     __tablename__ = "transactions"
     id = Column(Integer, primary_key=True, index=True)
     account_id = Column(Integer, ForeignKey("accounts.id"), nullable=False)
@@ -71,10 +77,10 @@ class Transaction(Base):
     amount = Column(Float, nullable=False)
     date = Column(DateTime, nullable=False)
     is_recurring = Column(Boolean, default=False)
-    notes = Column(Text, nullable=True)
-    created_at = Column(
-        DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc)
-    )
+    recurrence = Column(String(20), nullable=True)  # e.g., "MONTHLY", "EOM"
+    end_date = Column(DateTime, nullable=True)
+    notes = Column(String(255), nullable=True)
+    created_at = Column(DateTime, default=datetime.datetime.now(datetime.timezone.utc))
     deleted_at = Column(DateTime, nullable=True)
 
     account = relationship("Account", back_populates="transactions")

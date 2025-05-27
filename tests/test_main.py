@@ -1,9 +1,9 @@
 from fastapi.testclient import TestClient
 
-from app.core import seed
 from app.main import app
-from app.models import Account, User, UserSettings
 from tests.conftest import TestingSessionLocal
+from tests.helpers import (get_or_create_account, get_or_create_user,
+                           get_or_create_user_settings)
 
 client = TestClient(app)
 
@@ -12,13 +12,6 @@ def test_root():
     response = client.get("/")
     assert response.status_code == 200
     assert "Financial Forecasting API" in response.json()["msg"]
-
-
-def get_or_create_user(db) -> int:
-    user = db.query(User).filter_by(email="johandry@example.com").first()
-    if not user:
-        return seed.add_user(db)
-    return user.id
 
 
 def test_accounts_crud():
@@ -48,14 +41,6 @@ def test_accounts_crud():
     response = client.delete(f"/accounts/{account['id']}")
     assert response.status_code == 200
     assert response.json()["deleted_at"] is not None
-
-
-def get_or_create_account(db) -> int:
-    account = db.query(Account).filter_by(id=1).first()
-    if not account:
-        user_id = get_or_create_user(db)
-        return seed.add_account(db, user_id)
-    return account.id
 
 
 def test_bills_crud():
@@ -117,14 +102,6 @@ def test_transactions_crud():
     response = client.delete(f"/transactions/{transaction['id']}")
     assert response.status_code == 200
     assert response.json()["deleted_at"] is not None
-
-
-def get_or_create_user_settings(db):
-    user_id = get_or_create_user(db)
-    settings = db.query(UserSettings).filter_by(user_id=user_id).first()
-    if not settings:
-        seed.add_user_settings(db, user_id)
-    return user_id
 
 
 def test_user_settings_get_and_update():

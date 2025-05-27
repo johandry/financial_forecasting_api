@@ -28,6 +28,7 @@ clean:
 	find . -type d -name "__pycache__" -exec rm -rf {} +
 	rm -rf .pytest_cache
 	rm -rf .mypy_cache
+	rm -f test.db
 
 # Run the FastAPI app in Docker Compose
 docker-run:
@@ -40,3 +41,6 @@ docker-test:
 # Clean and destroy the Docker Compose environment (containers, networks, volumes)
 docker-clean:
 	docker compose down -v --remove-orphans
+
+# Clean up Docker Compose environment and remove Python generated files
+nuke: docker-clean clean

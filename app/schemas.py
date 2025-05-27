@@ -44,11 +44,16 @@ class Account(AccountBase):
 
 # ---------- Bill Schemas ----------
 class BillBase(BaseModel):
+    """
+    Base schema for Bill.
+    TODO: Add validation for recurrence rules and support for forecasting.
+    """
+
     name: str
     amount: float
     start_date: datetime
-    recurrence: Optional[str] = None
     end_date: Optional[datetime] = None
+    recurrence: Optional[str] = None  # e.g., "MONTHLY", "EOM"
     notes: Optional[str] = None
 
 
@@ -67,10 +72,17 @@ class Bill(BillBase):
 
 # ---------- Transaction Schemas ----------
 class TransactionBase(BaseModel):
+    """
+    Base schema for Transaction.
+    TODO: Add validation for recurrence and forecasting fields.
+    """
+
     name: str
     amount: float
     date: datetime
     is_recurring: bool = False
+    recurrence: Optional[str] = None
+    end_date: Optional[datetime] = None
     notes: Optional[str] = None
 
 

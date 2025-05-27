@@ -114,8 +114,7 @@ def add_transaction(
     return transaction.id
 
 
-def seed():
-    db: Session = SessionLocal()
+def seed(db: Session):
     user = db.query(User).first()
 
     if user is not None:
@@ -155,6 +154,7 @@ def seed():
 
 
 if __name__ == "__main__":
+    db: Session = SessionLocal()
     wait_for_db(engine)
     Base.metadata.create_all(bind=engine)
-    seed()
+    seed(db)
