@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from app.api import accounts, auth, bills, transactions, user_settings
+from app.api import accounts, auth, bills, transactions, user_settings, forecast
 from app.core.audit import register_audit_listeners
 from app.core.config import settings
 from app.core.rate_limit import RateLimiterMiddleware
@@ -18,6 +18,7 @@ app.include_router(transactions.router, prefix="/transactions", tags=["transacti
 app.include_router(
     user_settings.router, prefix="/user_settings", tags=["user_settings"]
 )
+app.include_router(forecast.router)
 
 # Register audit listeners
 register_audit_listeners()
