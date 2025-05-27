@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from typing import Optional
 
 from pydantic import BaseModel
@@ -116,3 +116,14 @@ class UserSettings(UserSettingsBase):
     deleted_at: Optional[datetime] = None
 
     model_config = {"from_attributes": True}
+
+
+# ---------- Forecast Override Schemas ----------
+class ForecastOverrideCreate(BaseModel):
+    user_id: int
+    account_id: int
+    event_type: str  # "bill" or "transaction"
+    event_id: int
+    event_date: date
+    skip: bool = False
+    override_amount: Optional[float] = None

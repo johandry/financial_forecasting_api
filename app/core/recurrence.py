@@ -4,9 +4,8 @@ Recurrence logic for bills and transactions.
 Provides a function to expand recurring events into individual dates using dateutil.rrule.
 """
 
-from dateutil.rrule import rrule, DAILY, WEEKLY, MONTHLY, YEARLY
-from datetime import datetime
 from dateutil.relativedelta import relativedelta
+from dateutil.rrule import DAILY, MONTHLY, WEEKLY, YEARLY, rrule
 
 FREQ_MAP = {
     "DAILY": DAILY,
@@ -54,11 +53,5 @@ def expand_recurrence(start_date, recurrence_rule, end_date=None):
                 break
         return [dt for dt in occurrences if not end_date or dt <= end_date]
 
-    rule = rrule(
-        freq,
-        dtstart=start_date,
-        until=end_date
-    )
+    rule = rrule(freq, dtstart=start_date, until=end_date)
     return list(rule)
-
-

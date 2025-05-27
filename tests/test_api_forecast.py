@@ -1,21 +1,26 @@
-from datetime import datetime, timedelta
-from types import SimpleNamespace
+from datetime import datetime
+
 from fastapi.testclient import TestClient
+
 from app.main import app
 from tests.conftest import TestingSessionLocal
 
 client = TestClient(app)
 
+
 def make_account(db, user_id, balance=100):
     from app.models import Account
+
     account = Account(name="Test", current_balance=balance, user_id=user_id)
     db.add(account)
     db.commit()
     db.refresh(account)
     return account
 
+
 def make_bill(db, account_id, amount, start_date, recurrence=None, end_date=None):
     from app.models import Bill
+
     bill = Bill(
         account_id=account_id,
         name="Test Bill",
@@ -29,8 +34,12 @@ def make_bill(db, account_id, amount, start_date, recurrence=None, end_date=None
     db.refresh(bill)
     return bill
 
-def make_tx(db, account_id, amount, date, is_recurring=False, recurrence=None, end_date=None):
+
+def make_tx(
+    db, account_id, amount, date, is_recurring=False, recurrence=None, end_date=None
+):
     from app.models import Transaction
+
     tx = Transaction(
         account_id=account_id,
         name="Test Tx",
@@ -45,13 +54,16 @@ def make_tx(db, account_id, amount, date, is_recurring=False, recurrence=None, e
     db.refresh(tx)
     return tx
 
+
 def make_user(db, email="test@example.com"):
     from app.models import User
+
     user = User(email=email, hashed_password="fake", is_active=True)
     db.add(user)
     db.commit()
     db.refresh(user)
     return user
+
 
 def test_forecast_and_alerts_endpoints():
     db = TestingSessionLocal()
@@ -78,3 +90,33 @@ def test_forecast_and_alerts_endpoints():
     data = response.json()
     assert "alerts" in data
     assert isinstance(data["alerts"], list)
+
+
+def test_create_override():
+    db = TestingSessionLocal()
+    today = datetime.now()
+    # Setup: create user, account, bill
+    user = make_user(db)
+    account = make_account(db, user_id=user.id, balance=100)
+    bill = make_bill(db, account.id, 10, today, "DAILY")
+    # Store IDs before closing session
+    user_id = user.id
+    account_id = account.id
+    bill_id = bill.id
+    db.close()
+
+    # Test creating an override (skip the bill for today)
+    payload = {
+        "user_id": user_id,
+        "account_id": account_id,
+        "event_type": "bill",
+        "event_id": bill_id,
+        "event_date": today.date().isoformat(),
+        "skip": True,
+        "override_amount": None,
+    }
+    response = client.post("/overrides", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] == "override saved"
+    assert "override_id" in data

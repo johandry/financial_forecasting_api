@@ -7,7 +7,9 @@ from app.models import Base
 
 
 def _serialize_value(val):
-    if isinstance(val, (datetime,)):
+    from datetime import date, datetime
+
+    if isinstance(val, (datetime, date)):
         return val.isoformat()
     return val
 

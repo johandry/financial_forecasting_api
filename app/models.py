@@ -1,7 +1,7 @@
 import datetime
 
-from sqlalchemy import (JSON, Boolean, Column, DateTime, Float, ForeignKey,
-                        Integer, String)
+from sqlalchemy import (JSON, Boolean, Column, Date, DateTime, Float,
+                        ForeignKey, Integer, String)
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
@@ -112,3 +112,18 @@ class AuditLog(Base):
     deleted_at = Column(DateTime, nullable=True)
 
     user = relationship("User", back_populates="audit_logs")
+
+
+class ForecastOverride(Base):
+    __tablename__ = "forecast_overrides"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    account_id = Column(Integer, ForeignKey("accounts.id"), nullable=False)
+    event_type = Column(String, nullable=False)  # "bill" or "transaction"
+    event_id = Column(Integer, nullable=False)  # Bill or Transaction ID
+    event_date = Column(Date, nullable=False)  # Date to skip/override
+    skip = Column(Boolean, default=False)  # If True, skip this event
+    override_amount = Column(Float, nullable=True)  # If set, use this amount instead
+
+    user = relationship("User")
+    account = relationship("Account")

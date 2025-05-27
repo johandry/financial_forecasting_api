@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
-from app.api import accounts, auth, bills, transactions, user_settings, forecast
+from app.api import (accounts, auth, bills, forecast, transactions,
+                     user_settings)
 from app.core.audit import register_audit_listeners
 from app.core.config import settings
 from app.core.rate_limit import RateLimiterMiddleware
