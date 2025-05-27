@@ -11,7 +11,7 @@ from app.models import ForecastOverride
 
 
 def forecast_balance(
-    account, bills, transactions, horizon_days=90, buffer_amount=50.0, db=None
+    account, bills, transactions, horizon_days=90, buffer_amount=50.0, db=None, start_date=None
 ):
     """
     Calculate daily balances for the next `horizon_days` days and alert dates below buffer.
@@ -26,7 +26,7 @@ def forecast_balance(
         Dict[date, balance]: Mapping of date to projected balance.
         List[date]: Dates when balance falls below buffer.
     """
-    today = datetime.now().date()
+    today = start_date or datetime.now().date()
     balances = {}
     # Start with today's balance
     balances[today] = account.current_balance
