@@ -120,3 +120,9 @@ def test_create_override():
     data = response.json()
     assert data["status"] == "override saved"
     assert "override_id" in data
+
+
+if __name__ == "__main__":
+    import pytest
+
+    pytest.main(["-v", __file__])

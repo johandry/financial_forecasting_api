@@ -103,3 +103,7 @@ def test_eom_leap_year():
     # EOM should include Feb 29 in a leap year
     dates = expand_recurrence(datetime(2024, 1, 31), "EOM", datetime(2024, 3, 31))
     assert datetime(2024, 2, 29) in dates
+
+
+if __name__ == "__main__":
+    pytest.main(["-v", __file__])

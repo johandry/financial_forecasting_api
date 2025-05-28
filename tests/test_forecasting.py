@@ -321,3 +321,9 @@ def test_forecast_daily_crossing_month_and_leap_day():
     mar_1 = datetime(2024, 3, 1).date()
     assert balances[mar_1] == 10
     assert mar_1 in alerts
+
+
+if __name__ == "__main__":
+    import pytest
+
+    pytest.main(["-v", __file__])

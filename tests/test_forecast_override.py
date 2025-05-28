@@ -79,3 +79,9 @@ def test_forecast_with_override_amount():
     db.close()
     # Bill should be 2 instead of 10, so balance is 98
     assert balances[today.date()] == 98
+
+
+if __name__ == "__main__":
+    import pytest
+
+    pytest.main(["-v", __file__])
