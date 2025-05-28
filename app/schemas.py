@@ -1,15 +1,16 @@
 from datetime import date, datetime
 from typing import Dict, List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 
 # ---------- User Schemas ----------
 class UserBase(BaseModel):
-    email: str
+    email: EmailStr
 
 
-class UserCreate(UserBase):
+class UserCreate(BaseModel):
+    email: EmailStr
     password: str
 
 
