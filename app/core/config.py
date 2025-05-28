@@ -5,7 +5,7 @@ from pydantic import ConfigDict
 from pydantic_settings import BaseSettings
 
 env = os.getenv("ENV", "")
-if env:
+if env != "":
     env = f".{env}"
 env_file = os.getenv("ENV_FILE", f".env{env}")
 
@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     POSTGRES_PORT: str = "5432"
     REDIS_URL: str = "redis://redis:6379/0"
     SECRET_KEY: str = "$uper$ecre7!"
-    LOG_LEVEL: str = "INFO"
+    LOG_LEVEL: str = "DEBUG"
 
     model_config = ConfigDict(env_file=env_file)
 
