@@ -1,21 +1,23 @@
-from fastapi import APIRouter, HTTPException
-from app.models import User
-from app.core.database import get_db
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from fastapi import Depends
-from app.schemas import UserCreate
+
+from app.core.database import get_db
 from app.core.security import get_password_hash
+from app.models import User
+from app.schemas import UserCreate
 
 router = APIRouter()
+
 
 @router.get(
     "/users",
     summary="List all users",
     description="Returns a list of all users in the system.",
-    response_description="A list of user objects."
+    response_description="A list of user objects.",
 )
 def list_users(db: Session = Depends(get_db)):
     return db.query(User).all()
+
 
 @router.post(
     "/users",
@@ -31,7 +33,7 @@ Create a new user with an email and password.
 }
 ```
 """,
-    response_description="The created user object."
+    response_description="The created user object.",
 )
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
     if db.query(User).filter(User.email == user.email).first():

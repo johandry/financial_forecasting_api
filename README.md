@@ -21,13 +21,13 @@ A Python-based backend service for ingesting bills and transactions, forecasting
 
 ```tree
 financial_forecasting_api/
-├── app/
+├── app/                    # FastAPI backend
 │   ├── api/                # FastAPI routers
 │   ├── core/               # Config, security, database, seed
 │   ├── models.py           # SQLAlchemy models
 │   ├── schemas.py          # Pydantic schemas
-│   ├── crud.py             # CRUD logic
 │   └── main.py             # FastAPI entrypoint
+├── frontend/               # React Web UI
 ├── tests/                  # Pytest tests
 ├── Dockerfile
 ├── docker-compose.yml

@@ -1,13 +1,15 @@
-import pytest
 from fastapi.testclient import TestClient
+
 from app.main import app
 
 client = TestClient(app)
+
 
 def test_list_users_initially_empty():
     response = client.get("/users")
     assert response.status_code == 200
     assert isinstance(response.json(), list)
+
 
 def test_create_user():
     user_data = {"email": "testuser@example.com", "password": "testpass123"}
@@ -16,6 +18,7 @@ def test_create_user():
     data = response.json()
     assert data["email"] == "testuser@example.com"
     assert "id" in data
+
 
 def test_create_user_duplicate_email():
     user_data = {"email": "duplicate@example.com", "password": "testpass123"}
@@ -27,6 +30,7 @@ def test_create_user_duplicate_email():
     assert response2.status_code == 400
     assert response2.json()["detail"] == "Email already registered"
 
+
 def test_list_users_after_creation():
     # Create a user
     user_data = {"email": "anotheruser@example.com", "password": "testpass123"}
@@ -36,3 +40,9 @@ def test_list_users_after_creation():
     assert response.status_code == 200
     users = response.json()
     assert any(u["email"] == "anotheruser@example.com" for u in users)
+
+
+if __name__ == "__main__":
+    import pytest
+
+    pytest.main(["-v", __file__])
