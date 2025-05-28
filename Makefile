@@ -5,12 +5,15 @@ install:
 	poetry install
 
 # Run the FastAPI app (dev mode)
-run:
+run-backend:
 	ENV=local poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+
+run-frontend:
+	cd frontend && npm run dev
 
 # Run tests
 test:
-	ENV=test poetry run pytest
+	ENV=test poetry run pytest # -vv
 
 # Seed the database with test data
 seed:
@@ -32,7 +35,8 @@ clean:
 
 # Run the FastAPI app in Docker Compose
 docker-run:
-	docker compose up --build api
+	open http://localhost:5173
+	docker compose up --build api db redis # frontend 
 
 # Run tests inside the Docker Compose container
 docker-test:
@@ -44,3 +48,5 @@ docker-clean:
 
 # Clean up Docker Compose environment and remove Python generated files
 nuke: docker-clean clean
+	docker image rm financial_forecasting_api-api:latest || true
+	docker images
