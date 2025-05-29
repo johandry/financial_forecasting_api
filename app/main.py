@@ -5,7 +5,6 @@ from app.api import (accounts, auth, bills, forecast, transactions,
                      user_settings, users)
 from app.core.audit import register_audit_listeners
 from app.core.config import settings
-from app.core.database import Base, engine
 from app.core.rate_limit import RateLimiterMiddleware
 
 app = FastAPI(title=settings.PROJECT_NAME)

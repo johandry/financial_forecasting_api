@@ -1,5 +1,7 @@
 import datetime
+
 from app.models import Account, User, UserSettings
+
 
 def add_user(db):
     from passlib.context import CryptContext
@@ -25,6 +27,7 @@ def add_user_settings(db, user_id):
     db.commit()
     db.refresh(settings)
 
+
 def add_account(
     db,
     user_id: int,
@@ -43,6 +46,7 @@ def add_account(
     db.commit()
     db.refresh(account)
     return account.id
+
 
 def get_or_create_user(db) -> int:
     user = db.query(User).filter_by(email="johandry@example.com").first()

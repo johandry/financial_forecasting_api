@@ -1,4 +1,5 @@
 import yaml
+
 from app.core.seed import seed_database
 from app.models import Account, User, UserSettings
 from tests.conftest import Base, TestingSessionLocal, engine

@@ -1,13 +1,15 @@
 import time
+from datetime import datetime
+
 import yaml
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import Session
-from datetime import datetime
 
 from app import models  # noqa: F401
 from app.core.database import Base, SessionLocal, engine
-from app.models import Account, Bill, Transaction, User, UserSettings
 from app.core.security import get_password_hash
+from app.models import Account, Bill, Transaction, User, UserSettings
+
 
 def seed_database(db: Session, data: dict):
     # Users
@@ -89,6 +91,7 @@ def seed_database(db: Session, data: dict):
     db.close()
     print("Database seeded successfully.")
 
+
 def wait_for_db(engine, timeout=30):
     start = time.time()
     while True:
@@ -100,9 +103,11 @@ def wait_for_db(engine, timeout=30):
                 raise
             time.sleep(1)
 
+
 def load_yaml_data(filepath):
     with open(filepath, "r") as f:
         return yaml.safe_load(f)
+
 
 if __name__ == "__main__":
     import sys
