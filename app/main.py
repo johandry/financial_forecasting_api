@@ -41,9 +41,6 @@ app.include_router(users.router)
 # Register audit listeners
 register_audit_listeners()
 
-# Create the database tables
-Base.metadata.create_all(bind=engine)
-
 
 @app.get("/")
 def read_root():
