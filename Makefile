@@ -15,10 +15,12 @@ run-frontend:
 test:
 	ENV=test poetry run pytest # -vv
 
-# Seed the database with test data
+# Seed the database with data from seed_data.yaml
 seed:
-	docker compose up -d db
-	ENV=local PYTHONPATH=. poetry run python app/core/seed.py
+	docker compose up --detach api db
+	docker compose cp seed_data.yaml api:/app/seed_data.yaml
+	docker compose exec -e PYTHONPATH=. api poetry run python app/core/seed.py /app/seed_data.yaml
+
 
 #  Lint and auto-fix the code using black and isort, then check with flake8
 fmt:
@@ -49,4 +51,5 @@ docker-clean:
 # Clean up Docker Compose environment and remove Python generated files
 nuke: docker-clean clean
 	docker image rm financial_forecasting_api-api:latest || true
+	docker image rm financial_forecasting_api-frontend:latest || true
 	docker images

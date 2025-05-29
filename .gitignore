@@ -50,6 +50,7 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
+seed_data.yaml
 
 # Translations
 *.mo

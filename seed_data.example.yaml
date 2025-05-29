@@ -1,0 +1,35 @@
+users:
+  - email: alice@example.com
+    password: alicepass
+  - email: bob@example.com
+    password: bobpass
+
+user_settings:
+  - user_email: alice@example.com
+    buffer_amount: 50.0
+    forecast_horizon_months: 3
+
+accounts:
+  - user_email: alice@example.com
+    name: Checking
+    type: checking
+    current_balance: 1000.0
+
+bills:
+  - account_name: Checking
+    name: Rent
+    amount: 1200.0
+    start_date: "2025-01-01"
+    recurrence: monthly
+  - account_name: Checking
+    name: Internet Bill
+    amount: 60.0
+    start_date: "2025-01-01"
+    recurrence: monthly
+
+transactions:
+  - account_name: Checking
+    name: Paycheck
+    amount: 2000.0
+    date: "2025-01-02"
+    type: credit
